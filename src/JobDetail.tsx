@@ -43,7 +43,6 @@ function TextFieldStyled(props: TextFieldStyledProps) {
     defaultValue={props.defaultValue}
     size="small"
     variant="outlined"
-    sx={{ width: '50%' }}
   />
 }
 
@@ -69,9 +68,10 @@ export function JobDetail() {
   return (
     <>
       <Button onClick={_ => setLoading(!loading)}> Toggle loading </Button>
-      <Box>
+      <Box sx={{maxWidth: "500px" }}>
         {/* rework to conditionally SHOW/HIDE content */}
         <Stack spacing={4}>
+          <h2>Job Detail</h2>
           <div role="presentation" onClick={_ => alert("breadcrumb click!")}>
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" href="/">
