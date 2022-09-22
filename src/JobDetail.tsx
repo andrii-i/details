@@ -7,7 +7,7 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Accordion from '@mui/material/Accordion';
-import { AccordionDetails, AccordionSummary, CircularProgress, TextField } from '@mui/material';
+import { AccordionDetails, AccordionSummary, CircularProgress, OutlinedInputProps, TextField } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 //delete
@@ -15,6 +15,37 @@ export type JobParameter = {
   name: string;
   value: string;
 };
+
+export interface IOutputFormatOption {
+  readonly name: string;
+  readonly label: string;
+}
+
+export type CreateJobFormState = {
+  jobName: string;
+  inputFile: string;
+  outputPath: string;
+  environment: string;
+  parameters?: JobParameter[];
+  outputFormats?: IOutputFormatOption[];
+};
+
+interface TextFieldStyledProps {
+  label: string;
+  defaultValue?: string;
+  InputProps?: Partial<OutlinedInputProps> | undefined
+}
+
+function TextFieldStyled(props: TextFieldStyledProps) {
+  return <TextField
+    {...props}
+    label={props.label}
+    defaultValue={props.defaultValue}
+    size="small"
+    variant="outlined"
+    sx={{ width: '50%' }}
+  />
+}
 
 export function JobDetail() {
   const [loading, setLoading] = useState(true);
@@ -24,6 +55,16 @@ export function JobDetail() {
   }
 
   let advancedOptions: JobParameter[] = [{ "name": "option 1", "value": "hello" }, { "name": "option 2", "value": "value 2" }];
+
+  let basicOptions: CreateJobFormState = {
+    jobName: "my job",
+    inputFile: "foobar",
+    outputPath: "foobar.jptr",
+    environment: "conda3",
+    parameters: advancedOptions,
+    outputFormats: [{ name: "hello", label: "label" }]
+  };
+
 
   return (
     <>
@@ -53,7 +94,11 @@ export function JobDetail() {
 
   function mainArea() {
     if (loading) {
-      return <CircularProgress />
+      return (
+        <Stack direction="row" justifyContent="center">
+          <CircularProgress />
+        </Stack>
+      )
     } else {
       return (
         <>
@@ -62,26 +107,36 @@ export function JobDetail() {
             <Button> Delete </Button>
           </Stack>
           <Stack spacing={4}>
-            <TextField
+            <TextFieldStyled
               label="Job name"
-              size="small"
-              variant="outlined"
-              sx={{ width: '50%' }} />
-            <TextField
+              defaultValue={basicOptions.jobName}
+              InputProps={{
+                readOnly: true
+              }} />
+            <TextFieldStyled
+              label="Job name"
+              defaultValue={basicOptions.jobName}
+              InputProps={{
+                readOnly: true
+              }} />
+            <TextFieldStyled
               label="Input file"
-              size="small"
-              variant="outlined"
-              sx={{ width: '50%' }} />
-            <TextField
+              defaultValue={basicOptions.inputFile}
+              InputProps={{
+                readOnly: true
+              }} />
+            <TextFieldStyled
               label="Output path"
-              size="small"
-              variant="outlined"
-              sx={{ width: '50%' }} />
-            <TextField
+              defaultValue={basicOptions.outputPath}
+              InputProps={{
+                readOnly: true
+              }} />
+            <TextFieldStyled
               label="Environment"
-              size="small"
-              variant="outlined"
-              sx={{ width: '50%' }} />
+              defaultValue={basicOptions.environment}
+              InputProps={{
+                readOnly: true
+              }} />
           </Stack>
 
           <Accordion defaultExpanded={advancedOptions.length > 0} disabled={advancedOptions.length === 0}>
@@ -96,21 +151,15 @@ export function JobDetail() {
               <Stack component="form" spacing={4}>
                 {advancedOptions.length > 0 ? advancedOptions.map((option, idx) => (
                   <Stack key={idx} direction="row" spacing={1}>
-                    <TextField
+                    <TextFieldStyled
                       label={`Name`}
                       defaultValue={option.name}
-                      size="small"
-                      variant="outlined"
-                      sx={{ width: '50%' }}
                       InputProps={{
                         readOnly: true
                       }} />
-                    <TextField
+                    <TextFieldStyled
                       label={`Value`}
                       defaultValue={option.value}
-                      size="small"
-                      variant="outlined"
-                      sx={{ width: '50%' }}
                       InputProps={{
                         readOnly: true
                       }} />
