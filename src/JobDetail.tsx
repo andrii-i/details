@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './JobDetail.css';
 
 import Box from '@mui/material/Box';
@@ -16,8 +16,8 @@ export type JobParameter = {
   value: string;
 };
 
-function JobDetail() {
-  const [loading, setLoading] = useState(false);
+export function JobDetail() {
+  const [loading, setLoading] = useState(true);
 
   let props = {
     jobId: "job-12"
@@ -30,75 +30,98 @@ function JobDetail() {
       <Button onClick={_ => setLoading(!loading)}> Toggle loading </Button>
       <Box>
         {/* rework to conditionally SHOW/HIDE content */}
-        {loading ? <CircularProgress /> :
-          <Stack spacing={1}>
-            <div role="presentation" onClick={_ => alert("breadcrumb click!")}>
-              <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">
-                  Jobs
-                </Link>
-                <Link
-                  underline="hover"
-                  color="inherit"
-                  href="/material-ui/getting-started/installation/"
-                >
-                  {props.jobId}
-                </Link>
-              </Breadcrumbs>
-            </div>
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
-              <Button> Rerun Job </Button>
-              <Button> Delete </Button>
-            </Stack>
-            <Box sx={{
-              border: 1,
-              borderColor: 'black',
-              width: 300,
-              height: 300
-            }}> Core Properties </Box>
-
-            <Accordion defaultExpanded={advancedOptions.length > 0} disabled={advancedOptions.length === 0}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel-content"
-                id="panel-header"
+        <Stack spacing={4}>
+          <div role="presentation" onClick={_ => alert("breadcrumb click!")}>
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Jobs
+              </Link>
+              <Link
+                underline="hover"
+                color="inherit"
+                href="/material-ui/getting-started/installation/"
               >
-                Advanced options
-              </AccordionSummary>
-              <AccordionDetails id="panel-content">
-                <Stack spacing={1}>
-                  {advancedOptions.length > 0 ? advancedOptions.map((option, idx) => (
-                    <Stack direction="row" spacing={1}>
-                      <TextField
-                        label={`Name ${idx + 1}`}
-                        defaultValue={option.name}
-                        size="small"
-                        variant="outlined"
-                        sx={{ width: '50%' }}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                      <TextField
-                        label={`Value ${idx + 1}`}
-                        defaultValue={option.value}
-                        size="small"
-                        variant="outlined"
-                        sx={{ width: '50%' }}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </Stack>
-                  )) : ''}
-                </Stack>
-              </AccordionDetails>
-            </Accordion>
-          </Stack>
-        }
+                {props.jobId}
+              </Link>
+            </Breadcrumbs>
+          </div>
+          {mainArea()}
+        </Stack>
       </Box>
     </>
   );
+
+  function mainArea() {
+    if (loading) {
+      return <CircularProgress />
+    } else {
+      return (
+        <>
+          <Stack direction="row" spacing={1} justifyContent="flex-end">
+            <Button> Rerun Job </Button>
+            <Button> Delete </Button>
+          </Stack>
+          <Stack spacing={4}>
+            <TextField
+              label="Job name"
+              size="small"
+              variant="outlined"
+              sx={{ width: '50%' }} />
+            <TextField
+              label="Input file"
+              size="small"
+              variant="outlined"
+              sx={{ width: '50%' }} />
+            <TextField
+              label="Output path"
+              size="small"
+              variant="outlined"
+              sx={{ width: '50%' }} />
+            <TextField
+              label="Environment"
+              size="small"
+              variant="outlined"
+              sx={{ width: '50%' }} />
+          </Stack>
+
+          <Accordion defaultExpanded={advancedOptions.length > 0} disabled={advancedOptions.length === 0}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel-content"
+              id="panel-header"
+            >
+              Advanced options
+            </AccordionSummary>
+            <AccordionDetails id="panel-content">
+              <Stack component="form" spacing={4}>
+                {advancedOptions.length > 0 ? advancedOptions.map((option, idx) => (
+                  <Stack key={idx} direction="row" spacing={1}>
+                    <TextField
+                      label={`Name`}
+                      defaultValue={option.name}
+                      size="small"
+                      variant="outlined"
+                      sx={{ width: '50%' }}
+                      InputProps={{
+                        readOnly: true
+                      }} />
+                    <TextField
+                      label={`Value`}
+                      defaultValue={option.value}
+                      size="small"
+                      variant="outlined"
+                      sx={{ width: '50%' }}
+                      InputProps={{
+                        readOnly: true
+                      }} />
+                  </Stack>
+                )) : ''}
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
+        </>)
+    }
+  }
 }
 
 export default JobDetail;
